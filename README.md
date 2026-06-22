@@ -37,3 +37,6 @@ If you have any suggestions to improve the program, feel free to open an Issue o
 
 # License
 This project is available under the [MIT License].
+
+# Download
+https://drive.google.com/file/d/1Yy9KivdBk8FerWejLyP-7lSGtDYneuKI/view?usp=drive_link
