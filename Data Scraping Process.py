@@ -67,7 +67,7 @@ def show_results_gui(matches_details):
 
     results_window = tk.Toplevel(root)
     results_window.title("نتائج المباريات")
-    results_window.geometry("900x550")
+    results_window.geometry("1000x550")
 
     # التعامل مع إغلاق النافذة من زر X العلوي ليعيد إظهار النافذة الرئيسية
     def on_closing():
@@ -75,7 +75,7 @@ def show_results_gui(matches_details):
         root.deiconify()
     results_window.protocol("WM_DELETE_WINDOW", on_closing)
 
-    columns = ('بطولة', 'فريق1', 'فريق2', 'وقت', 'نتيجة')
+    columns = ('بطولة', 'فريق1', 'فريق2', 'تاريخ', 'وقت', 'نتيجة')
 
     tree = ttk.Treeview(
         results_window,
@@ -86,12 +86,14 @@ def show_results_gui(matches_details):
     tree.heading('بطولة', text='البطولة')
     tree.heading('فريق1', text='الفريق الأول')
     tree.heading('فريق2', text='الفريق الثاني')
+    tree.heading('تاريخ', text='التاريخ')
     tree.heading('وقت', text='الوقت')
     tree.heading('نتيجة', text='النتيجة')
 
     tree.column('بطولة', width=250)
     tree.column('فريق1', width=180)
     tree.column('فريق2', width=180)
+    tree.column('تاريخ', width=100)
     tree.column('وقت', width=100)
     tree.column('نتيجة', width=100)
 
@@ -103,6 +105,7 @@ def show_results_gui(matches_details):
                 match['نوع البطولة'],
                 match['الفريق الاول'],
                 match['الفريق الثاني'],
+                match['التاريخ'],
                 match['موعد المبارة'],
                 match['النتيجة']
             )
@@ -179,7 +182,9 @@ def show_results_gui(matches_details):
 # ---------------- جلب البيانات ----------------
 
 def start_scraping():
-    user_date = cal.get_date().strftime('%m/%d/%Y')
+    selected_date = cal.get_date()
+    user_date = selected_date.strftime('%m/%d/%Y')
+    formatted_date = selected_date.strftime('%Y-%m-%d')
 
     try:
         headers = {
@@ -227,13 +232,14 @@ def start_scraping():
                     if result_div:
                         scores = result_div.find_all("span", class_="score")
                         if len(scores) >= 2:
-                            score = f"{scores[0].text.strip()} - {scores[1].text.strip()}"
+                            score = f"{scores[0].text.strip()} \u2013 {scores[1].text.strip()}"
 
                         time_tag = result_div.find("span", class_="time")
                         if time_tag:
                             match_time = time_tag.text.strip()
 
                     matches_details.append({
+                        "التاريخ": formatted_date,
                         "نوع البطولة": championship_title,
                         "الفريق الاول": team_A,
                         "الفريق الثاني": team_B,
